@@ -1,3 +1,7 @@
-## 0.0.1
+## 1.0.2
 
-* TODO: Describe initial release.
+* update readme
+
+## 1.0.0
+
+* Face collect
