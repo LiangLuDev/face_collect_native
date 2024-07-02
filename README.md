@@ -7,7 +7,7 @@ A plugin for face recognition and capture. support Android and iOS
 - Return a clear and accurate image of the face.
 
 ### Screenshot
-![screenshot](./screenshot.png)
+<img src="./screenshot.png" width="400px" />
 
 ### How to use
 
