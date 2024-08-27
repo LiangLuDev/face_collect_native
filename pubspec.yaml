@@ -1,6 +1,6 @@
 name: face_collect_native
 description: "A face collection liveness package based on Google ML"
-version: 1.0.2
+version: 1.0.3
 homepage: https://github.com/LiangLuDev/face_collect_native.git
 
 environment:
@@ -12,7 +12,7 @@ dependencies:
     sdk: flutter
 
   google_mlkit_face_detection: ^0.11.0
-  camera: ^0.10.1
+  camera: ^0.11.0+2
   image: ^4.0.17
   lottie: ^1.0.1
 
