@@ -8,9 +8,13 @@ A plugin for liveness face recognition and capture. support Android and iOS
 - Return a clear and accurate image of the face.
 
 ### Screenshot
-<img src="https://github.com/LiangLuDev/face_collect_native/raw/main/screenshot/init_screenshot.png" width="400px" />
-<img src="https://github.com/LiangLuDev/face_collect_native/raw/main/screenshot/smile_screenshot.png" width="400px" />
-<img src="https://github.com/LiangLuDev/face_collect_native/raw/main/screenshot/blink_screenshot.png" width="400px" />
+<table>
+  <tr>
+    <td><img src="https://github.com/LiangLuDev/face_collect_native/raw/main/screenshot/init_screenshot.png" width="250px"/></td>
+    <td><img src="https://github.com/LiangLuDev/face_collect_native/raw/main/screenshot/smile_screenshot.png" width="250px"/></td>
+    <td><img src="https://github.com/LiangLuDev/face_collect_native/raw/main/screenshot/blink_screenshot.png" width="250px"/></td>
+  </tr>
+</table>
 
 ### How to use
 
