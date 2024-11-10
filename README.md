@@ -1,13 +1,16 @@
-# Face collect native
-A plugin for face recognition and capture. support Android and iOS
+# Liveness face collect native
+A plugin for liveness face recognition and capture. support Android and iOS
 
 ### Features
 - To recognize a face, keep still within the face recognition frame to ensure clarity and accuracy.
+- Determine if you are a real person through blinking and smiling.
 - Animation during facial scanning.
 - Return a clear and accurate image of the face.
 
 ### Screenshot
-<img src="https://github.com/LiangLuDev/face_collect_native/raw/main/screenshot.png" width="400px" />
+<img src="https://github.com/LiangLuDev/face_collect_native/raw/main/screenshot/init_screenshot.png" width="400px" />
+<img src="https://github.com/LiangLuDev/face_collect_native/raw/main/screenshot/smile_screenshot.png" width="400px" />
+<img src="https://github.com/LiangLuDev/face_collect_native/raw/main/screenshot/blink_screenshot.png" width="400px" />
 
 ### How to use
 

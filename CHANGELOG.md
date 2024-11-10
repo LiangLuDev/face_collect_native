@@ -1,3 +1,7 @@
+## 2.0.0
+
+* Support liveness face detection through blink and smile.
+
 ## 1.0.4
 
 * Required for compatibility with mobile_scanner: ^6.0.0.

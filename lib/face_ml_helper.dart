@@ -6,8 +6,15 @@ import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 enum FaceStatus {
   unknown,
   outside, // Face detected, but not in the frame
-  inside, //  Face is already within the frame. Hold still
+  smile, // Face detected &  in the frame & smile
+  blink, // Face detected &  in the frame & blink
   finish, //  Face collected
+}
+
+enum BlinkState {
+  none, // initial state
+  eyesOpen, // open eyes
+  eyesClosed, // close eyes
 }
 
 class FaceMLHelper {
@@ -17,6 +24,11 @@ class FaceMLHelper {
 
   /// Keep still and steady for multiple continuous shots for successful collect.
   final List<Face> _tempFaces = [];
+
+  BlinkState _currentBlinkState = BlinkState.none;
+  DateTime? _blinkStartTime;
+
+  bool _isSmilePassed = false;
 
   final FaceDetector _faceDetector = FaceDetector(
     options: FaceDetectorOptions(
@@ -54,17 +66,37 @@ class FaceMLHelper {
       if (isLandmarks && isFaceRegionInside) {
         _tempFaces.add(face);
         if (_tempFaces.length > stabilityCount) {
-          if ((face.leftEyeOpenProbability ?? 0.0) > eyeOpenProbability &&
-              (face.rightEyeOpenProbability ?? 0.0) > eyeOpenProbability) {
+          // Detect Smile
+          if (!_isSmilePassed) {
+            onFaceLiveStatusChange?.call(FaceStatus.smile);
+            bool isSmiling = (face.smilingProbability ?? 0.0) > 0.8;
+
+            if (isSmiling) {
+              _isSmilePassed = true;
+            } else {
+              return null;
+            }
+          }
+
+          // A blink is defined as closing and reopening the eyes within 2 seconds.
+          bool eyesOpen = (face.leftEyeOpenProbability ?? 0.0) > 0.75 &&
+              (face.rightEyeOpenProbability ?? 0.0) > 0.75;
+          bool eyesClosed = (face.leftEyeOpenProbability ?? 1.0) < 0.25 &&
+              (face.rightEyeOpenProbability ?? 1.0) < 0.25;
+
+          onFaceLiveStatusChange?.call(FaceStatus.blink);
+
+          if (_handleBlinkState(eyesOpen, eyesClosed)) {
             _faceDetector.close();
             _tempFaces.clear();
             onFaceLiveStatusChange?.call(FaceStatus.finish);
             return face;
           }
         }
-        if (_tempFaces.isNotEmpty) {
-          onFaceLiveStatusChange?.call(FaceStatus.inside);
-        }
+      } else {
+        /// Not in the frame, need restart the process
+        _resetAllStates();
+        onFaceLiveStatusChange?.call(FaceStatus.outside);
       }
     } else {
       _tempFaces.clear();
@@ -158,6 +190,53 @@ class FaceMLHelper {
       return false;
     }
     return true;
+  }
+
+  bool _handleBlinkState(bool eyesOpen, bool eyesClosed) {
+    switch (_currentBlinkState) {
+      case BlinkState.none:
+        if (eyesOpen) {
+          _currentBlinkState = BlinkState.eyesOpen;
+          _blinkStartTime = DateTime.now();
+        }
+        return false;
+
+      case BlinkState.eyesOpen:
+        if (eyesClosed) {
+          _currentBlinkState = BlinkState.eyesClosed;
+        } else if (_isBlinkTimeout()) {
+          _resetBlinkState();
+        }
+        return false;
+
+      case BlinkState.eyesClosed:
+        if (eyesOpen) {
+          if (!_isBlinkTimeout()) {
+            return true;
+          }
+        }
+        if (_isBlinkTimeout()) {
+          _resetBlinkState();
+        }
+        return false;
+    }
+  }
+
+  bool _isBlinkTimeout() {
+    if (_blinkStartTime == null) return true;
+    return DateTime.now().difference(_blinkStartTime!) >
+        const Duration(seconds: 2);
+  }
+
+  void _resetBlinkState() {
+    _currentBlinkState = BlinkState.none;
+    _blinkStartTime = null;
+  }
+
+  void _resetAllStates() {
+    _tempFaces.clear();
+    _isSmilePassed = false;
+    _resetBlinkState();
   }
 
   dispose() {

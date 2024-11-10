@@ -14,20 +14,41 @@ class FaceCollectScreen extends StatefulWidget {
   Size? ovalSize;
 
   /// Face recognition prompt text
-  String? hint;
+  String? initHint;
 
   /// Face recognition prompt text style
-  TextStyle? hintStyle;
+  TextStyle? promptStyle;
+
+  String? smileHint;
+
+  String? blinkHint;
 
   static Future show(BuildContext context,
-      {Size? ovalSize, String? hint, TextStyle? hintStyle}) {
+      {Size? ovalSize,
+      String? initHint,
+      String? smileHint,
+      String? blinkHint,
+      TextStyle? promptStyle}) {
     return Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => FaceCollectScreen()),
+      MaterialPageRoute(
+          builder: (context) => FaceCollectScreen(
+                initHint: initHint,
+                smileHint: smileHint,
+                blinkHint: blinkHint,
+                promptStyle: promptStyle,
+                ovalSize: ovalSize,
+              )),
     );
   }
 
-  FaceCollectScreen({super.key, this.hint, this.hintStyle, this.ovalSize});
+  FaceCollectScreen(
+      {super.key,
+      this.initHint,
+      this.smileHint,
+      this.blinkHint,
+      this.promptStyle,
+      this.ovalSize});
 
   @override
   State<FaceCollectScreen> createState() => _FaceCollectScreenState();
@@ -188,7 +209,6 @@ class _FaceCollectScreenState extends State<FaceCollectScreen> {
       child: Container(
         color: Colors.black,
         child: Stack(
-          // fit: StackFit.expand,
           alignment: AlignmentDirectional.center,
           children: [
             if (_cameraView != null) Container(child: _cameraView),
@@ -206,9 +226,9 @@ class _FaceCollectScreenState extends State<FaceCollectScreen> {
                 start: 32,
                 end: 32,
                 child: Text(
-                  widget.hint ?? _getFaceStatusText(),
+                  _buildHintStr(),
                   textAlign: TextAlign.center,
-                  style: widget.hintStyle ??
+                  style: widget.promptStyle ??
                       TextStyle(
                         fontSize: 26,
                         fontWeight: FontWeight.bold,
@@ -250,12 +270,16 @@ class _FaceCollectScreenState extends State<FaceCollectScreen> {
     );
   }
 
-  _getFaceStatusText() {
-    if (_faceStatus == FaceStatus.inside) {
-      return 'Face detected\nHold still';
-    } else if (_faceStatus == FaceStatus.finish) {
-      return 'Processing\nplease wait a moment';
+  String _buildHintStr() {
+    switch (_faceStatus) {
+      case FaceStatus.blink:
+        return widget.blinkHint ?? 'Blink';
+      case FaceStatus.smile:
+        return widget.smileHint ?? 'Smile';
+      case FaceStatus.finish:
+        return 'Successfully';
+      default:
+        return widget.initHint ?? 'Blink';
     }
-    return 'Face detected\nPut it in the frame';
   }
 }
