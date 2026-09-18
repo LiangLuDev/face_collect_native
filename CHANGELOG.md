@@ -1,3 +1,8 @@
+## 2.1.0
+
+* Widen the `google_mlkit_face_detection` constraint to allow 0.14.x, which adds Apple Silicon iOS simulator support.
+* Raise the minimum Dart SDK to 3.8.0 and Flutter to 3.32.0, as required by `google_mlkit_face_detection` 0.14.0.
+
 ## 2.0.0
 
 * Support liveness face detection through blink and smile.
